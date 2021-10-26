@@ -1,0 +1,48 @@
+########cmd deplot wordpress-puppet
+
+######documentation
+###forge link for documentation
+https://forge.puppet.com/modules/puppetlabs/docker
+
+###service puppet
+https://puppet.com/docs/puppet/7/types/service.html#service-description
+
+###doc docker hub wordpress
+https://hub.docker.com/_/wordpress
+
+
+########Commandes
+
+####on server vm puppet
+##install the module docker
+puppet module install puppetlabs-docker
+
+##download, check your manifest "deploy-wordpress-puppet.pp" if ok:
+vi deploy-wordpress-puppet.pp
+
+##apply the manifest to test if it work on server vm
+puppet apply deploy-wordpress-puppet.pp
+
+##test on the navigator if you can access to wordpress from this vm, type on the navigator:
+IP_adress_server_vm:8080
+
+##for the client to get acces to wordpress, copy the manifest in the manifests folder of the environments(here production) of the client(agent)
+cp deploy-wordpress-puppet.pp /etc/puppetlabs/code/environments/production/manifests/
+
+#check if copy is correct
+ls /etc/puppetlabs/code/environments/production/manifests/
+
+####on client vm
+
+###check in which environment agent is:
+puppet config print | grep environment
+puppet config print --section=agent | grep environment
+
+##set the working environments(here to production) of the agent
+puppet config set environment production --section=agent 
+
+#get access wordpress by getting to manifest "deploy-wordpress-puppet.pp" on the production folder of the server vm
+puppet agent -t
+
+##test on the navigator if you can access to wordpress from this vm, type on the navigator:
+IP_adress_client_vm:8080
